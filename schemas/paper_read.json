@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["stars", "title_local", "one_liner", "profile_brief", "problem", "method", "results", "limitations", "code", "relevance"],
+  "properties": {
+    "stars": {"type": "integer", "enum": [1, 2, 3, 4, 5], "description": "Recommendation rating per the rubric"},
+    "title_local": {"type": "string", "description": "Short title in the output language"},
+    "one_liner": {"type": "string", "description": "One-sentence conclusion: what was done plus the key number"},
+    "profile_brief": {"type": "string", "description": "One sentence for the reader's project: which part, what to do"},
+    "problem": {"type": "string", "description": "The problem, and why existing approaches fall short"},
+    "method": {"type": "string", "description": "How it works - the mechanism, not a restated abstract (3-5 sentences)"},
+    "results": {"type": "string", "description": "Key results: benchmarks, baselines, concrete numbers"},
+    "limitations": {"type": "string", "description": "Weaknesses: experiment scale, fairness of comparisons, reliance on frontier models, reproducibility"},
+    "code": {"type": "string", "description": "Whether code/models/data are released, with links; 'not mentioned' if absent"},
+    "relevance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "modules", "insight", "action"],
+      "properties": {
+        "level": {"type": "string", "enum": ["high", "medium", "low"]},
+        "modules": {"type": "array", "items": {"type": "string"}, "description": "Affected parts of the reader's project, using the names from the context"},
+        "insight": {"type": "string", "description": "Concrete implications: how to use it, what to change, or why it does not apply"},
+        "action": {"type": "string", "enum": ["try", "watch", "fyi"]}
+      }
+    }
+  }
+}

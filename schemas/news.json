@@ -1,0 +1,51 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["overview", "profile_takeaway", "items", "oss_items", "topic_updates"],
+  "properties": {
+    "overview": {"type": "string", "description": "Today's headline in one sentence"},
+    "profile_takeaway": {"type": "string", "description": "The single most important point for the reader's project, one sentence; empty string if none"},
+    "items": {
+      "type": "array",
+      "description": "News items (not open-source projects)",
+      "items": {"$ref": "#/$defs/item"}
+    },
+    "oss_items": {
+      "type": "array",
+      "description": "Open-source projects (category must be open_source)",
+      "items": {"$ref": "#/$defs/item"}
+    },
+    "topic_updates": {
+      "type": "array",
+      "description": "Updated cumulative 'known' summary for each tracked topic that had a follow-up today",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["topic_id", "known"],
+        "properties": {
+          "topic_id": {"type": "string"},
+          "known": {"type": "string", "description": "Cumulative key facts, at most two sentences"}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stars", "title", "url", "source", "category", "summary", "profile_note", "followup_of", "what_new", "track_topic"],
+      "properties": {
+        "stars": {"type": "integer", "enum": [1, 2, 3, 4, 5], "description": "Recommendation rating per the rubric"},
+        "title": {"type": "string", "description": "Short title"},
+        "url": {"type": "string", "description": "Copied verbatim from the candidate"},
+        "source": {"type": "string"},
+        "category": {"type": "string", "enum": ["agent_engineering", "models", "products", "papers", "open_source", "industry"]},
+        "summary": {"type": "string", "description": "One sentence: what it is plus the key number or point"},
+        "profile_note": {"type": "string", "description": "One sentence for the reader's project (which part, what to do); only for 4+ stars and real relevance, else empty string"},
+        "followup_of": {"type": "string", "description": "Tracked topic id if this is a new development of it, else empty string"},
+        "what_new": {"type": "string", "description": "If followup_of is set: what is new versus 'known', one sentence; else empty string"},
+        "track_topic": {"type": "string", "description": "For new 4+ star events worth following: a short topic name; else empty string"}
+      }
+    }
+  }
+}

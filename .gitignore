@@ -1,0 +1,14 @@
+# Personal configuration and secrets
+config.json
+.env
+profiles/*
+!profiles/example/
+
+# Runtime data: reading history, generated digests, logs
+state/
+out/
+logs/
+
+__pycache__/
+*.pyc
+.DS_Store

@@ -1,0 +1,36 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["trend", "deep_read", "glance"],
+  "properties": {
+    "trend": {"type": "string", "description": "Overall trend of today's agent papers, one sentence"},
+    "deep_read": {
+      "type": "array",
+      "description": "Papers most worth reading in full, highest priority first",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "reason", "topic_id"],
+        "properties": {
+          "id": {"type": "string", "description": "Copied verbatim from the candidate list"},
+          "reason": {"type": "string", "description": "Why it deserves a full read, one sentence"},
+          "topic_id": {"type": "string", "description": "Tracked topic id if directly related, else empty string"}
+        }
+      }
+    },
+    "glance": {
+      "type": "array",
+      "description": "Papers worth knowing about but not reading in full",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title_local", "one_liner"],
+        "properties": {
+          "id": {"type": "string"},
+          "title_local": {"type": "string", "description": "Short title in the output language"},
+          "one_liner": {"type": "string", "description": "What it does, one short sentence"}
+        }
+      }
+    }
+  }
+}

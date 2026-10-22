@@ -1,0 +1,229 @@
+{
+  "timezone": "America/New_York",
+  "schedule": {
+    "hour": 8,
+    "label": "io.github.ai-radar"
+  },
+  "language": {
+    "output": "English",
+    "ui": "en"
+  },
+  "profile": {
+    "label": "Acme Agents",
+    "icon": "🏢",
+    "context_file": "profiles/example/context.md"
+  },
+  "llm": {
+    "backend": "claude-cli",
+    "claude-cli": {
+      "model": "claude-opus-5-5"
+    },
+    "codex-cli": {
+      "model": ""
+    }
+  },
+  "news": {
+    "lookback_hours": 30,
+    "max_items": 10,
+    "max_oss_items": 5,
+    "max_followups": 5,
+    "interests": [
+      "Agent engineering: agent frameworks, tool calling, MCP, memory and planning, evaluation, coding agents, production lessons",
+      "Products and ecosystem: new agent products, personal / proactive assistants, enterprise agent platforms, MCP and skill standards",
+      "New model technology: model releases, architectures, reasoning, post-training and RL, long context, multimodality",
+      "Open models and local deployment: open-weight releases, inference optimisation, quantisation, on-device models",
+      "Influential papers that change practice, not incremental improvements",
+      "Developer tools and platforms: important API, SDK, IDE and CLI updates"
+    ],
+    "deprioritize": [
+      "Funding, valuations and personnel gossip (unless industry-level news)",
+      "Generic AI doom or opinion pieces",
+      "Marketing fluff and duplicate coverage"
+    ],
+    "sources": [
+      {
+        "name": "Simon Willison",
+        "type": "rss",
+        "url": "https://simonwillison.net/atom/everything/",
+        "max": 15
+      },
+      {
+        "name": "Latent Space / AINews",
+        "type": "rss",
+        "url": "https://www.latent.space/feed",
+        "max": 4,
+        "content_chars": 4000
+      },
+      {
+        "name": "Interconnects",
+        "type": "rss",
+        "url": "https://www.interconnects.ai/feed",
+        "max": 3
+      },
+      {
+        "name": "Import AI",
+        "type": "rss",
+        "url": "https://importai.substack.com/feed",
+        "max": 2
+      },
+      {
+        "name": "OpenAI",
+        "type": "rss",
+        "url": "https://openai.com/news/rss.xml",
+        "max": 5
+      },
+      {
+        "name": "Google DeepMind",
+        "type": "rss",
+        "url": "https://deepmind.google/blog/rss.xml",
+        "max": 5
+      },
+      {
+        "name": "Google AI Blog",
+        "type": "rss",
+        "url": "https://blog.google/technology/ai/rss/",
+        "max": 4
+      },
+      {
+        "name": "Hugging Face Blog",
+        "type": "rss",
+        "url": "https://huggingface.co/blog/feed.xml",
+        "max": 5
+      },
+      {
+        "name": "LangChain Blog",
+        "type": "rss",
+        "url": "https://www.langchain.com/blog/rss.xml",
+        "max": 3
+      },
+      {
+        "name": "MCP Blog",
+        "type": "rss",
+        "url": "https://blog.modelcontextprotocol.io/index.xml",
+        "max": 3
+      },
+      {
+        "name": "TechCrunch AI",
+        "type": "rss",
+        "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+        "max": 8
+      },
+      {
+        "name": "Product Hunt AI",
+        "type": "rss",
+        "url": "https://www.producthunt.com/feed?category=artificial-intelligence",
+        "max": 8
+      },
+      {
+        "name": "r/LocalLLaMA",
+        "type": "rss",
+        "url": "https://www.reddit.com/r/LocalLLaMA/top/.rss?t=day",
+        "max": 12,
+        "ignore_window": true
+      },
+      {
+        "name": "Hacker News",
+        "type": "hn",
+        "min_points": 60,
+        "max": 20
+      },
+      {
+        "name": "GitHub Trending",
+        "type": "github_trending",
+        "keyword_filter": true,
+        "max": 10,
+        "open_source": true
+      },
+      {
+        "name": "GitHub new repos",
+        "type": "github_new",
+        "query": "agent OR agentic OR mcp OR llm",
+        "created_within_days": 7,
+        "min_stars": 200,
+        "max": 10,
+        "open_source": true
+      },
+      {
+        "name": "Trending HF models",
+        "type": "hf_models",
+        "max_age_days": 30,
+        "max": 8,
+        "open_source": true,
+        "pipelines": [
+          "text-generation",
+          "image-text-to-text",
+          "any-to-any",
+          "feature-extraction",
+          "sentence-similarity",
+          "text-ranking",
+          "automatic-speech-recognition",
+          "text-to-speech"
+        ]
+      },
+      {
+        "name": "Competitor releases (example)",
+        "type": "rss",
+        "url": "https://github.com/langgenius/dify/releases.atom",
+        "max": 2,
+        "content_chars": 1200,
+        "enabled": false
+      },
+      {
+        "name": "InfoQ China",
+        "type": "rss",
+        "url": "https://www.infoq.cn/feed",
+        "max": 6,
+        "keyword_filter": true,
+        "enabled": false
+      }
+    ]
+  },
+  "papers": {
+    "enabled": true,
+    "lookback_hours": 48,
+    "max_deep": 3,
+    "max_glance": 4,
+    "recheck_upvotes": 30
+  },
+  "tracking": {
+    "expire_days": 30,
+    "pushed_days": 7
+  },
+  "delivery": [
+    {
+      "name": "local html",
+      "type": "file",
+      "dir": "out/site"
+    },
+    {
+      "name": "feishu / lark bot",
+      "type": "webhook",
+      "format": "feishu",
+      "url": "${FEISHU_WEBHOOK_URL}",
+      "secret": "${FEISHU_WEBHOOK_SECRET}",
+      "enabled": false
+    },
+    {
+      "name": "slack",
+      "type": "webhook",
+      "format": "slack",
+      "url": "${SLACK_WEBHOOK_URL}",
+      "enabled": false
+    },
+    {
+      "name": "discord",
+      "type": "webhook",
+      "format": "discord",
+      "url": "${DISCORD_WEBHOOK_URL}",
+      "enabled": false
+    },
+    {
+      "name": "custom command",
+      "type": "command",
+      "run": "your-cli send --file {markdown}",
+      "run_text": "your-cli send --text {text}",
+      "enabled": false
+    }
+  ],
+  "notify_on_failure": true
+}
