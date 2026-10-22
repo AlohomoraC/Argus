@@ -1,11 +1,11 @@
 # Scheduled digest on GitHub Actions — no computer needs to stay on.
 #
 # Setup (in your own fork; a private fork is recommended because state and outputs are your reading history):
-#   1. Secrets → RADAR_CONFIG_JSON: the full contents of your config.json (it holds no secrets; those are ${VARS}).
-#      Optional RADAR_CONTEXT_MD: your project context; it is written to the path in profile.context_file.
+#   1. Secrets → ARGUS_CONFIG_JSON: the full contents of your config.json (it holds no secrets; those are ${VARS}).
+#      Optional ARGUS_CONTEXT_MD: your project context; it is written to the path in profile.context_file.
 #   2. Secrets for your backend: ANTHROPIC_API_KEY (claude-cli) or OPENAI_API_KEY (codex-cli).
 #   3. Secrets for delivery, matching the ${VARS} in your config, e.g. FEISHU_WEBHOOK_URL, SLACK_WEBHOOK_URL.
-#   4. Enable this workflow. It wakes hourly; `radar.py due` skips all setup unless a job is due.
+#   4. Enable this workflow. It wakes hourly; `argus.py due` skips all setup unless a job is due.
 # State (seen items, tracked topics) persists in the Actions cache.
 name: digest
 on:
@@ -35,26 +35,26 @@ jobs:
 
       - name: Write config and context from secrets
         env:
-          RADAR_CONFIG_JSON: ${{ secrets.RADAR_CONFIG_JSON }}
-          RADAR_CONTEXT_MD: ${{ secrets.RADAR_CONTEXT_MD }}
+          ARGUS_CONFIG_JSON: ${{ secrets.ARGUS_CONFIG_JSON }}
+          ARGUS_CONTEXT_MD: ${{ secrets.ARGUS_CONTEXT_MD }}
         run: |
-          if [ -n "$RADAR_CONFIG_JSON" ]; then printf '%s' "$RADAR_CONFIG_JSON" > config.json; fi
-          [ -f config.json ] || { echo "No config: add the RADAR_CONFIG_JSON secret or commit config.json"; exit 1; }
-          if [ -n "$RADAR_CONTEXT_MD" ]; then
+          if [ -n "$ARGUS_CONFIG_JSON" ]; then printf '%s' "$ARGUS_CONFIG_JSON" > config.json; fi
+          [ -f config.json ] || { echo "No config: add the ARGUS_CONFIG_JSON secret or commit config.json"; exit 1; }
+          if [ -n "$ARGUS_CONTEXT_MD" ]; then
             ctx=$(python -c "import json;print(json.load(open('config.json'))['profile']['context_file'])")
-            mkdir -p "$(dirname "$ctx")" && printf '%s' "$RADAR_CONTEXT_MD" > "$ctx"
+            mkdir -p "$(dirname "$ctx")" && printf '%s' "$ARGUS_CONTEXT_MD" > "$ctx"
           fi
 
       - name: Restore state
         uses: actions/cache/restore@v4
         with:
           path: state
-          key: radar-state-${{ github.run_id }}
-          restore-keys: radar-state-
+          key: argus-state-${{ github.run_id }}
+          restore-keys: argus-state-
 
       - name: Anything due?
         id: due
-        run: python radar.py due && echo "run=true" >> "$GITHUB_OUTPUT" || echo "run=false" >> "$GITHUB_OUTPUT"
+        run: python argus.py due && echo "run=true" >> "$GITHUB_OUTPUT" || echo "run=false" >> "$GITHUB_OUTPUT"
 
       - name: Install the model CLI
         if: steps.due.outputs.run == 'true'
@@ -69,14 +69,14 @@ jobs:
 
       - name: Run due jobs
         if: steps.due.outputs.run == 'true'
-        run: python radar.py tick
+        run: python argus.py tick
 
       - name: Save state
         if: always() && steps.due.outputs.run == 'true'
         uses: actions/cache/save@v4
         with:
           path: state
-          key: radar-state-${{ github.run_id }}
+          key: argus-state-${{ github.run_id }}
 
       - name: Upload digests
         if: always() && steps.due.outputs.run == 'true'

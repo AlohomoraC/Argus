@@ -1,4 +1,4 @@
-"""`radar.py doctor`: check that everything a scheduled run needs is in place."""
+"""`argus.py doctor`: check that everything a scheduled run needs is in place."""
 import shutil
 import subprocess
 import sys

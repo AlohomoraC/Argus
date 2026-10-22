@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from radar import llm
+from argus import llm
 from tests.helpers import make_cfg
 
 

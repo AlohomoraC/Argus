@@ -1,10 +1,12 @@
-# AI Radar
+# Argus
+
+*百眼盯着 AI，只为你的项目聚焦。*（Argus 是希腊神话里长着一百只眼睛的守望者。）
 
 **每天一份有观点的 AI 简报：新闻、开源项目和 Agent 论文，按 _你的_ 项目来判断价值。**
 
 [English](README.md) | 简体中文
 
-AI Radar 每天收集约 50 条新闻候选和约 200 篇新的 agent 论文，交给你已经在用的模型（Claude Code 或 Codex）
+Argus 每天收集约 50 条新闻候选和约 200 篇新的 agent 论文，交给你已经在用的模型（Claude Code 或 Codex）
 挑选和打分，精读最好的几篇论文，然后往你的聊天工具推送两张精简的卡片：
 
 - **AI 日报**：新闻按 1–5 星分组（🔥 必读 / 👍 推荐 / 👀 值得一看），另有 🧩 开源项目分组（GitHub 日榜、
@@ -25,10 +27,10 @@ AI Radar 每天收集约 50 条新闻候选和约 200 篇新的 agent 论文，�
 ## 快速开始
 
 ```bash
-git clone <本仓库> ai-radar && cd ai-radar
+git clone https://github.com/AlohomoraC/Argus.git && cd Argus
 ```
 
-**方式 A：让你的编码 agent 来配置（推荐）。** 在 Claude Code 或 Codex 里打开这个目录，说一句「帮我配置 AI Radar」。
+**方式 A：让你的编码 agent 来配置（推荐）。** 在 Claude Code 或 Codex 里打开这个目录，说一句「帮我配置 Argus」。
 agent 会按照 [`AGENTS.md`](AGENTS.md) 询问你的项目和推送渠道，生成配置，跑一次 dry run 给你看样例，然后安装定时任务。
 
 **方式 B：手动配置。**
@@ -37,10 +39,10 @@ agent 会按照 [`AGENTS.md`](AGENTS.md) 询问你的项目和推送渠道，生
 cp config.example.json config.json            # 修改时区、推送时间、语言、profile、llm、delivery
 mkdir -p profiles/me && cp profiles/example/context.md profiles/me/context.md   # 写你的项目背景
 cp .env.example .env                          # Webhook 地址等密钥（配置里用 ${VAR} 引用）
-python3 radar.py doctor                       # 检查工具、网络、连接器
-python3 radar.py run --dry-run                # 生成 out/dry-run/*.md|html，不发送
-python3 radar.py doctor --send-test           # 发一条测试消息
-python3 radar.py schedule install             # 每小时唤醒（macOS 用 launchd，Linux 用 crontab）
+python3 argus.py doctor                       # 检查工具、网络、连接器
+python3 argus.py run --dry-run                # 生成 out/dry-run/*.md|html，不发送
+python3 argus.py doctor --send-test           # 发一条测试消息
+python3 argus.py schedule install             # 每小时唤醒（macOS 用 launchd，Linux 用 crontab）
 ```
 
 界面语言设为 `"language": {"ui": "zh"}`，输出语言设为 `"output": "简体中文 (Simplified Chinese)"`，卡片就是中文的。
@@ -57,7 +59,7 @@ python3 radar.py schedule install             # 每小时唤醒（macOS 用 laun
 
 ## 三种运行位置
 
-- **本机**：`python3 radar.py schedule install`，需要电脑开着；睡眠中错过的会在唤醒后补发。
+- **本机**：`python3 argus.py schedule install`，需要电脑开着；睡眠中错过的会在唤醒后补发。
 - **GitHub Actions**：见 [`.github/workflows/digest.yml`](.github/workflows/digest.yml) 文件开头的说明。建议用私有 fork，
   因为状态缓存就是你的阅读记录。
 - **Claude Code / Codex 定时任务**：设 `llm.backend = "agent"`，并使用 `AGENTS.md` 里的定时任务提示词。

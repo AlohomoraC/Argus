@@ -6,7 +6,7 @@ import subprocess
 from datetime import datetime, timedelta
 from pathlib import Path
 
-UA = "Mozilla/5.0 (compatible; ai-radar/0.1)"
+UA = "Mozilla/5.0 (compatible; argus/0.1)"
 
 
 def http_get(url, timeout=25, headers=None):

@@ -1,4 +1,4 @@
-"""Scheduling. The OS timer wakes `radar.py tick` hourly; each job runs once a day after `schedule.hour`
+"""Scheduling. The OS timer wakes `argus.py tick` hourly; each job runs once a day after `schedule.hour`
 (in `timezone`) and keeps its own done-marker, so a failed job retries next hour without resending the
 other, and a laptop asleep at send time catches up on wake. DST needs no special handling.
 """
@@ -63,7 +63,7 @@ class Tee:
 # ---------------------------------------------------------------- installers
 
 def _program(cfg):
-    return [sys.executable, str(ROOT / "radar.py"), "tick"] + (
+    return [sys.executable, str(ROOT / "argus.py"), "tick"] + (
         ["--config", str(cfg.config_path)] if cfg.config_path and Path(cfg.config_path) != ROOT / "config.json" else [])
 
 
@@ -89,7 +89,7 @@ def _plist(cfg):
 
 def _cron_line(cfg):
     cmd = " ".join(f"'{a}'" for a in _program(cfg))
-    return f"0 * * * * PATH='{os.environ.get('PATH', '')}' {cmd} >> '{cfg.logs / 'scheduler.log'}' 2>&1  # ai-radar"
+    return f"0 * * * * PATH='{os.environ.get('PATH', '')}' {cmd} >> '{cfg.logs / 'scheduler.log'}' 2>&1  # argus"
 
 
 def install(cfg, apply=True):
@@ -113,11 +113,11 @@ def install(cfg, apply=True):
             print(line)
             return
         current = subprocess.run(["crontab", "-l"], capture_output=True, text=True).stdout
-        kept = [ln for ln in current.splitlines() if "# ai-radar" not in ln]
+        kept = [ln for ln in current.splitlines() if "# argus" not in ln]
         subprocess.run(["crontab", "-"], input="\n".join(kept + [line]) + "\n", text=True, check=True)
         print("installed crontab entry (hourly)")
     else:
-        raise SystemExit("No launchd or crontab found. Run `radar.py tick` hourly with your own scheduler, "
+        raise SystemExit("No launchd or crontab found. Run `argus.py tick` hourly with your own scheduler, "
                          "or use the GitHub Actions workflow in .github/workflows/digest.yml.")
 
 
@@ -131,6 +131,6 @@ def uninstall(cfg):
         print(f"removed launchd job {label}")
     elif shutil.which("crontab"):
         current = subprocess.run(["crontab", "-l"], capture_output=True, text=True).stdout
-        kept = [ln for ln in current.splitlines() if "# ai-radar" not in ln]
+        kept = [ln for ln in current.splitlines() if "# argus" not in ln]
         subprocess.run(["crontab", "-"], input="\n".join(kept) + "\n", text=True, check=True)
         print("removed crontab entry")

@@ -19,4 +19,4 @@ jobs:
       - name: Example config loads
         run: |
           cp config.example.json config.json
-          python radar.py track list
+          python argus.py track list

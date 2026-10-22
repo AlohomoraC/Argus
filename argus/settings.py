@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 DEFAULTS = {
     "timezone": "UTC",
-    "schedule": {"hour": 8, "label": "io.github.ai-radar"},
+    "schedule": {"hour": 8, "label": "io.github.argus"},
     "language": {"output": "English", "ui": "en"},
     "profile": {"label": "my project", "icon": "🏢", "context_file": "profiles/example/context.md"},
     "llm": {
@@ -108,7 +108,7 @@ class Config(dict):
 def load(config_path=None, root=ROOT):
     root = Path(root)
     load_dotenv(root / ".env")
-    config_path = Path(config_path or os.environ.get("RADAR_CONFIG") or root / "config.json")
+    config_path = Path(config_path or os.environ.get("ARGUS_CONFIG") or root / "config.json")
     if not config_path.exists():
         raise SystemExit(f"No config at {config_path}. Copy config.example.json to config.json "
                          "(or ask your coding agent to run the setup in AGENTS.md).")

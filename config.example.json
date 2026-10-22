@@ -2,7 +2,7 @@
   "timezone": "America/New_York",
   "schedule": {
     "hour": 8,
-    "label": "io.github.ai-radar"
+    "label": "io.github.argus"
   },
   "language": {
     "output": "English",

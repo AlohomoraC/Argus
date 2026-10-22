@@ -3,7 +3,7 @@ import threading
 import unittest
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-from radar import deliver, news, render, tracking
+from argus import deliver, news, render, tracking
 from tests.helpers import FakeLLM, item, make_cfg
 
 CANDIDATES = [

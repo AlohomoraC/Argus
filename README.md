@@ -1,10 +1,12 @@
-# AI Radar
+# Argus
+
+*A hundred eyes on AI, focused on your project.* (Argus Panoptes, the hundred-eyed watchman of Greek myth.)
 
 **A daily, opinionated digest of AI news, open-source projects and agent papers — judged against _your_ project.**
 
 English | [简体中文](README.zh-CN.md)
 
-Every morning AI Radar collects ~50 news candidates and ~200 new agent papers, has a model you already use
+Every morning Argus collects ~50 news candidates and ~200 new agent papers, has a model you already use
 (Claude Code or Codex) pick and rate what matters, reads the best papers in full, and sends two compact cards
 to your chat app:
 
@@ -29,11 +31,11 @@ What makes it useful rather than another feed:
 ## Quick start
 
 ```bash
-git clone <this repo> ai-radar && cd ai-radar
+git clone https://github.com/AlohomoraC/Argus.git && cd Argus
 ```
 
 **Option A — let your coding agent do it (recommended).** Open the folder in Claude Code or Codex and say
-*"set up AI Radar for me"*. The agent follows [`AGENTS.md`](AGENTS.md): it asks about your project and chat app,
+*"set up Argus for me"*. The agent follows [`AGENTS.md`](AGENTS.md): it asks about your project and chat app,
 writes your config, runs a dry run, shows you a sample, and installs the schedule.
 
 **Option B — by hand.**
@@ -42,10 +44,10 @@ writes your config, runs a dry run, shows you a sample, and installs the schedul
 cp config.example.json config.json            # edit: timezone, schedule.hour, language, profile, llm, delivery
 mkdir -p profiles/me && cp profiles/example/context.md profiles/me/context.md   # describe your project
 cp .env.example .env                          # webhook URLs and other secrets referenced as ${VAR}
-python3 radar.py doctor                       # checks tools, network, connectors
-python3 radar.py run --dry-run                # writes out/dry-run/*.md|html, sends nothing
-python3 radar.py doctor --send-test           # one test message
-python3 radar.py schedule install             # hourly launchd (macOS) / crontab (Linux) wake-up
+python3 argus.py doctor                       # checks tools, network, connectors
+python3 argus.py run --dry-run                # writes out/dry-run/*.md|html, sends nothing
+python3 argus.py doctor --send-test           # one test message
+python3 argus.py schedule install             # hourly launchd (macOS) / crontab (Linux) wake-up
 ```
 
 Requirements: Python 3.9+, `curl`, and one of: [Claude Code](https://code.claude.com) (`claude`),
@@ -55,7 +57,7 @@ Requirements: Python 3.9+, `curl`, and one of: [Claude Code](https://code.claude
 
 ```
 OS timer / GitHub Actions / agent scheduled task
-  └─ radar.py tick            hourly; each job runs once a day after schedule.hour (your timezone)
+  └─ argus.py tick            hourly; each job runs once a day after schedule.hour (your timezone)
        ├─ news:   RSS · Hacker News · GitHub · Hugging Face  → dedupe → 1 model call → card → deliver
        └─ papers: arXiv + HF Daily Papers → screen → read top 3 in full → card → deliver
 ```
@@ -76,9 +78,9 @@ Models are set per backend: `"llm": {"claude-cli": {"model": "claude-opus-5-5", 
 
 ### Where it runs
 
-- **Your machine**: `python3 radar.py schedule install`. The computer must be on (or catch up on wake).
+- **Your machine**: `python3 argus.py schedule install`. The computer must be on (or catch up on wake).
 - **GitHub Actions**: [`.github/workflows/digest.yml`](.github/workflows/digest.yml) — put your config in the
-  `RADAR_CONFIG_JSON` secret, your context in `RADAR_CONTEXT_MD`, plus an API key and webhook secrets. Use a
+  `ARGUS_CONFIG_JSON` secret, your context in `ARGUS_CONTEXT_MD`, plus an API key and webhook secrets. Use a
   private fork: the state cache is your reading history.
 - **Inside Claude Code / Codex**: schedule a daily task with the prompt from [`AGENTS.md`](AGENTS.md)
   (section 2) and `llm.backend = "agent"`.
@@ -120,17 +122,17 @@ Add `"enabled": false` to keep a connector configured but off.
 | `tracking.expire_days`, `tracking.pushed_days` | Auto topics archive after N quiet days; repeat-detection window. |
 | `paths.state`, `paths.out`, `paths.logs` | Where runtime data goes. |
 
-Unspecified keys fall back to the defaults in [`radar/settings.py`](radar/settings.py).
+Unspecified keys fall back to the defaults in [`argus/settings.py`](argus/settings.py).
 
 ## Commands
 
 ```bash
-python3 radar.py run [news|papers|all] [--dry-run] [--backend claude-cli|codex-cli|agent]
-python3 radar.py tick                       # scheduled entry point (respects time + done-markers)
-python3 radar.py due                        # exit 0 if a job is due (used by CI to skip idle runs)
-python3 radar.py track list | add "Name" --known "what we know" | remove <id>
-python3 radar.py schedule install | uninstall | print
-python3 radar.py doctor [--send-test]
+python3 argus.py run [news|papers|all] [--dry-run] [--backend claude-cli|codex-cli|agent]
+python3 argus.py tick                       # scheduled entry point (respects time + done-markers)
+python3 argus.py due                        # exit 0 if a job is due (used by CI to skip idle runs)
+python3 argus.py track list | add "Name" --known "what we know" | remove <id>
+python3 argus.py schedule install | uninstall | print
+python3 argus.py doctor [--send-test]
 ```
 
 ## Cost

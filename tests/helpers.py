@@ -1,14 +1,14 @@
 import tempfile
 from pathlib import Path
 
-from radar import settings
+from argus import settings
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
 
 def make_cfg(overrides=None):
     """A Config rooted in a fresh temp dir (state/out/logs live there), with an example context file."""
-    root = Path(tempfile.mkdtemp(prefix="radar-test-"))
+    root = Path(tempfile.mkdtemp(prefix="argus-test-"))
     (root / "profiles").mkdir()
     (root / "profiles" / "ctx.md").write_text("# Test project\nComponents: planner, executor.")
     data = settings._merge(settings.DEFAULTS, {"profile": {"label": "Test", "icon": "🏢", "context_file": "profiles/ctx.md"},

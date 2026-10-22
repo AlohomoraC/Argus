@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime, timezone
 
-from radar import sources
+from argus import sources
 from tests.helpers import FIXTURES
 
 SINCE = datetime(2026, 10, 20, tzinfo=timezone.utc)

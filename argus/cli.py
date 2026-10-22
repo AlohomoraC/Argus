@@ -1,4 +1,4 @@
-"""Command line: `python3 radar.py <command>`. Run `python3 radar.py -h` for help."""
+"""Command line: `python3 argus.py <command>`. Run `python3 argus.py -h` for help."""
 import argparse
 import sys
 import traceback
@@ -40,8 +40,8 @@ def _run_jobs(cfg, jobs, backend, gate):
 
 
 def main(argv=None):
-    ap = argparse.ArgumentParser(prog="radar.py", description="AI Radar — daily AI news, open-source and agent-paper digest.")
-    ap.add_argument("--config", help="path to config.json (default: ./config.json or $RADAR_CONFIG)")
+    ap = argparse.ArgumentParser(prog="argus.py", description="Argus — daily AI news, open-source and agent-paper digest.")
+    ap.add_argument("--config", help="path to config.json (default: ./config.json or $ARGUS_CONFIG)")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     r = sub.add_parser("run", help="run jobs now")

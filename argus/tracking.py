@@ -2,7 +2,7 @@
 dropped as already seen.
 
 Topics enter automatically (news items rated ≥4★ that the model marks `track_topic`) or manually
-(`radar.py track add`); automatic topics are archived after `tracking.expire_days` without news.
+(`argus.py track add`); automatic topics are archived after `tracking.expire_days` without news.
 A log of recently pushed items (`tracking.pushed_days`) lets the model skip the same story under a new URL.
 """
 import json

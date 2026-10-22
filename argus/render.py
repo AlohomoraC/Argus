@@ -30,7 +30,7 @@ UI = {
         "papers_subtitle": "{read} deep reads · {glance} at a glance",
         "papers_footer": "{n} new papers · {read} read in full · interpreted by AI from the full text, check the original",
         "actions": {"try": "try it", "watch": "watch", "fyi": "FYI"},
-        "failure": "AI Radar: the {job} job failed", "test": "AI Radar test message — delivery works.",
+        "failure": "Argus: the {job} job failed", "test": "Argus test message — delivery works.",
     },
     "zh": {
         "news_title": "AI 日报", "papers_title": "Agent 论文精读", "headline": "今日要点",
@@ -48,7 +48,7 @@ UI = {
         "papers_subtitle": "精读 {read} 篇 · 速览 {glance} 篇",
         "papers_footer": "{n} 篇新论文 · 精读 {read} 篇 · AI 阅读全文后生成，结论以原文为准",
         "actions": {"try": "建议实验", "watch": "持续观察", "fyi": "了解即可"},
-        "failure": "AI Radar：{job} 任务运行失败", "test": "AI Radar 测试消息：推送渠道工作正常。",
+        "failure": "Argus：{job} 任务运行失败", "test": "Argus 测试消息：推送渠道工作正常。",
     },
 }
 
