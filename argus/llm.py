@@ -82,6 +82,22 @@ def _checked(schema, data, task):
     return data
 
 
+def _claude_error(proc, result):
+    """Turn a failed `claude -p` run into one readable line, with a hint for the common causes."""
+    if not isinstance(result, dict):
+        return f"claude -p failed ({proc.returncode}): {(proc.stderr or proc.stdout)[-800:]}"
+    status, message = result.get("api_error_status"), str(result.get("result") or result.get("subtype"))
+    hint = ""
+    if status == 401:
+        hint = (" — fix: run `claude` once interactively to log in again; for unattended runs create a long-lived "
+                "token with `claude setup-token` and put CLAUDE_CODE_OAUTH_TOKEN in .env (or use ANTHROPIC_API_KEY)")
+    elif status == 429:
+        hint = " — rate or usage limit reached; the scheduled run retries next hour"
+    elif status is None and "connect" in message.lower():
+        hint = " — network: if you need a proxy, set HTTPS_PROXY in .env"
+    return f"claude -p failed (exit {proc.returncode}, API status {status}): {message[:300]}{hint}"
+
+
 class ClaudeCLI:
     resumable = False
 
@@ -97,9 +113,12 @@ class ClaudeCLI:
             cmd += ["--model", model]
         proc = subprocess.run(cmd, input=prompt, capture_output=True, text=True, cwd=self.cfg.root,
                               timeout=self.cfg["llm"]["timeout_seconds"])
-        if proc.returncode != 0:
-            raise RuntimeError(f"claude -p failed ({proc.returncode}): {(proc.stderr or proc.stdout)[-2000:]}")
-        result = json.loads(proc.stdout)
+        try:
+            result = json.loads(proc.stdout)
+        except json.JSONDecodeError:
+            result = None
+        if proc.returncode != 0 or not isinstance(result, dict) or result.get("is_error"):
+            raise RuntimeError(_claude_error(proc, result))
         data = result.get("structured_output")
         if data is None:
             data = json.loads(result["result"])

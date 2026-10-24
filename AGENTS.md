@@ -31,7 +31,10 @@ Do these steps in order. Ask the user only what you cannot infer; propose sensib
      `llm.backend` (and `llm.<backend>.model` if they want a specific model), `news.interests`,
      `news.deprioritize`, sources (set `"enabled": true/false`), and `delivery`.
    - `.env` — only the secrets the config references as `${VAR}` (webhook URLs, signing secrets). Never put
-     secrets in `config.json` and never print them back to the user.
+     secrets in `config.json` and never print them back to the user. If the user's shell uses a proxy
+     (`HTTPS_PROXY` etc.), copy those variables into `.env` too so scheduled runs reach the sources. For unattended
+     `claude-cli` runs on a subscription, suggest `claude setup-token` (the user runs it and pastes the token into
+     `.env` as `CLAUDE_CODE_OAUTH_TOKEN` themselves — never ask them to paste it into the chat).
 4. **Verify**:
    - `python3 argus.py doctor` — fix every ✗.
    - `python3 argus.py run --dry-run` — runs both jobs, writes `out/dry-run/*.md|html`, sends nothing and changes

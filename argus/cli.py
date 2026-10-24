@@ -80,7 +80,8 @@ def main(argv=None):
     if args.cmd == "tick":
         if not any(schedule.due(cfg, j) for j in JOB_RUNNERS):
             return 0
-        sys.stdout = schedule.Tee(cfg.logs / f"{today()}.log")
+        log = cfg.logs / f"{today()}.log"
+        sys.stdout, sys.stderr = schedule.Tee(log, sys.stdout), schedule.Tee(log, sys.stderr)
         code = _run_jobs(cfg, list(JOB_RUNNERS), None, gate=True)
         schedule.cleanup(cfg)
         return code

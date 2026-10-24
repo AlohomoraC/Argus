@@ -66,6 +66,15 @@ python3 argus.py schedule install             # 每小时唤醒（macOS 用 laun
 
 连接器、配置项、命令和成本的完整说明见 [英文 README](README.md)。
 
+## 常见问题
+
+- **告警里出现 `API status 401` / "OAuth access token has expired"**：定时任务沿用了你的交互式 Claude 登录，而令牌已经过期。
+  运行一次 `claude` 重新登录即可；无人值守运行建议用 `claude setup-token` 生成长期令牌，写进 `.env` 的
+  `CLAUDE_CODE_OAUTH_TOKEN=…`（或者使用 `ANTHROPIC_API_KEY`）。定时任务每小时会自动重试，直到成功为止。
+- **某些源只在定时任务里失败**：定时任务拿不到终端里的代理设置。把 `HTTPS_PROXY` / `HTTP_PROXY` / `NO_PROXY` 写进 `.env`，
+  或者在设置了代理的终端里重新运行 `python3 argus.py schedule install`。
+- **去哪看详情**：`logs/<日期>.log` 里有每次运行的输出和报错；`python3 argus.py doctor` 会检查工具、登录、代理、网络和连接器。
+
 ## 隐私与安全
 
 - 配置、背景、密钥、状态、产物和日志都在 `.gitignore` 里，fork 时请保持。

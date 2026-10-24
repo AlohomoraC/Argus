@@ -67,5 +67,16 @@ class AgentBackendTests(unittest.TestCase):
         self.assertEqual(cfg.model_for("codex-cli", "news"), "")
 
 
+class ClaudeErrorTests(unittest.TestCase):
+    def test_expired_login_is_explained(self):
+        class Proc:
+            returncode, stdout, stderr = 1, "", ""
+        msg = llm._claude_error(Proc(), {"is_error": True, "api_error_status": 401,
+                                         "result": "Failed to authenticate. API Error: 401 OAuth access token has expired."})
+        self.assertIn("API status 401", msg)
+        self.assertIn("claude setup-token", msg)
+        self.assertNotIn("usage", msg)
+
+
 if __name__ == "__main__":
     unittest.main()

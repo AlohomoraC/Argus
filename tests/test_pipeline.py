@@ -138,5 +138,22 @@ class DeliveryTests(unittest.TestCase):
             deliver.deliver(cfg, doc, paths)
 
 
+class ScheduleEnvTests(unittest.TestCase):
+    def test_proxy_is_carried_into_the_scheduler(self):
+        import os
+        from argus import schedule
+        cfg = make_cfg()
+        old = os.environ.get("HTTPS_PROXY")
+        os.environ["HTTPS_PROXY"] = "http://127.0.0.1:7890"
+        try:
+            self.assertIn("HTTPS_PROXY=http://127.0.0.1:7890", schedule._cron_line(cfg))
+            self.assertIn("<key>HTTPS_PROXY</key><string>http://127.0.0.1:7890</string>", schedule._plist(cfg)[1])
+        finally:
+            if old is None:
+                del os.environ["HTTPS_PROXY"]
+            else:
+                os.environ["HTTPS_PROXY"] = old
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -152,6 +152,18 @@ your plan instead.
   10 requests/min without `GITHUB_TOKEN`; GitHub Trending is parsed from HTML and may break if the page changes.
   Digests summarise sources for personal use — link to, don't republish, the originals.
 
+## Troubleshooting
+
+- **Failure notice says `API status 401` / "OAuth access token has expired"** — a scheduled run reused your
+  interactive Claude login after its token expired. Run `claude` once to log in again; for unattended runs create
+  a long-lived token with `claude setup-token` and put `CLAUDE_CODE_OAUTH_TOKEN=…` in `.env` (or use
+  `ANTHROPIC_API_KEY`). The scheduled run retries every hour until the job succeeds.
+- **Some sources fail only in scheduled runs** (`✗ <source>: CalledProcessError` in `logs/<date>.log`) — the scheduler
+  does not see your shell's proxy. Put `HTTPS_PROXY` / `HTTP_PROXY` / `NO_PROXY` in `.env`, or re-run
+  `python3 argus.py schedule install` from a shell where they are set.
+- **Where are the details?** `logs/<date>.log` has each run's output and tracebacks; `python3 argus.py doctor`
+  checks tools, login, proxy, network and connectors.
+
 ## Development
 
 ```bash

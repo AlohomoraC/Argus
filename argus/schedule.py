@@ -2,8 +2,10 @@
 (in `timezone`) and keeps its own done-marker, so a failed job retries next hour without resending the
 other, and a laptop asleep at send time catches up on wake. DST needs no special handling.
 """
+import html
 import os
 import platform
+import shlex
 import shutil
 import subprocess
 import sys
@@ -45,11 +47,11 @@ def mark_done(cfg, job):
 
 
 class Tee:
-    """Mirror stdout into the day's log file."""
+    """Mirror a stream (stdout or stderr) into the day's log file."""
 
-    def __init__(self, path):
+    def __init__(self, path, stream=None):
         path.parent.mkdir(parents=True, exist_ok=True)
-        self.file, self.stdout = open(path, "a"), sys.stdout
+        self.file, self.stdout = open(path, "a"), stream or sys.stdout
 
     def write(self, s):
         self.file.write(s)
@@ -67,17 +69,27 @@ def _program(cfg):
         ["--config", str(cfg.config_path)] if cfg.config_path and Path(cfg.config_path) != ROOT / "config.json" else [])
 
 
+# Captured at install time so scheduled runs see the same tools and network as your shell.
+ENV_KEYS = ("PATH", "HTTPS_PROXY", "HTTP_PROXY", "ALL_PROXY", "NO_PROXY",
+            "https_proxy", "http_proxy", "all_proxy", "no_proxy")
+
+
+def _env():
+    return {k: os.environ[k] for k in ENV_KEYS if os.environ.get(k)}
+
+
 def _plist(cfg):
     label = cfg["schedule"]["label"]
     args = "".join(f"<string>{a}</string>" for a in _program(cfg))
     log = cfg.logs / "scheduler.log"
+    env = "".join(f"<key>{k}</key><string>{html.escape(v)}</string>" for k, v in _env().items())
     return label, f"""<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
   <key>Label</key><string>{label}</string>
   <key>ProgramArguments</key><array>{args}</array>
-  <key>EnvironmentVariables</key><dict><key>PATH</key><string>{os.environ.get('PATH', '')}</string></dict>
+  <key>EnvironmentVariables</key><dict>{env}</dict>
   <key>StartInterval</key><integer>3600</integer>
   <key>RunAtLoad</key><true/>
   <key>StandardOutPath</key><string>{log}</string>
@@ -89,7 +101,8 @@ def _plist(cfg):
 
 def _cron_line(cfg):
     cmd = " ".join(f"'{a}'" for a in _program(cfg))
-    return f"0 * * * * PATH='{os.environ.get('PATH', '')}' {cmd} >> '{cfg.logs / 'scheduler.log'}' 2>&1  # argus"
+    env = " ".join(f"{k}={shlex.quote(v)}" for k, v in _env().items())
+    return f"0 * * * * {env} {cmd} >> '{cfg.logs / 'scheduler.log'}' 2>&1  # argus"
 
 
 def install(cfg, apply=True):
@@ -106,7 +119,7 @@ def install(cfg, apply=True):
         path.write_text(plist)
         subprocess.run(["launchctl", "bootstrap", f"gui/{uid}", str(path)], check=True)
         print(f"installed launchd job {label} -> {path} (runs hourly; jobs fire after "
-              f"{cfg['schedule']['hour']}:00 {cfg['timezone']})")
+              f"{cfg['schedule']['hour']}:00 {cfg['timezone']}; environment: {', '.join(_env())})")
     elif shutil.which("crontab"):
         line = _cron_line(cfg)
         if not apply:
