@@ -1,6 +1,9 @@
 # Scheduled digest on GitHub Actions — no computer needs to stay on.
 #
+# Off by default: the job is skipped (no failures, no notification emails) until you opt in.
+#
 # Setup (in your own fork; a private fork is recommended because state and outputs are your reading history):
+#   0. Settings → Secrets and variables → Actions → Variables → ARGUS_SCHEDULE = true   (turns this workflow on)
 #   1. Secrets → ARGUS_CONFIG_JSON: the full contents of your config.json (it holds no secrets; those are ${VARS}).
 #      Optional ARGUS_CONTEXT_MD: your project context; it is written to the path in profile.context_file.
 #   2. Secrets for your backend: ANTHROPIC_API_KEY (claude-cli) or OPENAI_API_KEY (codex-cli).
@@ -17,6 +20,7 @@ concurrency: digest
 
 jobs:
   tick:
+    if: ${{ vars.ARGUS_SCHEDULE == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
     env:

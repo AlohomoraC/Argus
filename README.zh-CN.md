@@ -60,7 +60,8 @@ python3 argus.py schedule install             # 每小时唤醒（macOS 用 laun
 ## 三种运行位置
 
 - **本机**：`python3 argus.py schedule install`，需要电脑开着；睡眠中错过的会在唤醒后补发。
-- **GitHub Actions**：见 [`.github/workflows/digest.yml`](.github/workflows/digest.yml) 文件开头的说明。建议用私有 fork，
+- **GitHub Actions**：见 [`.github/workflows/digest.yml`](.github/workflows/digest.yml) 文件开头的说明。默认关闭，
+  需要在仓库变量里设置 `ARGUS_SCHEDULE=true` 才会运行，否则会直接跳过，不会产生失败通知。建议用私有 fork，
   因为状态缓存就是你的阅读记录。
 - **Claude Code / Codex 定时任务**：设 `llm.backend = "agent"`，并使用 `AGENTS.md` 里的定时任务提示词。
 

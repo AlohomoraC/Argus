@@ -79,8 +79,8 @@ Models are set per backend: `"llm": {"claude-cli": {"model": "claude-opus-5-5", 
 ### Where it runs
 
 - **Your machine**: `python3 argus.py schedule install`. The computer must be on (or catch up on wake).
-- **GitHub Actions**: [`.github/workflows/digest.yml`](.github/workflows/digest.yml) — put your config in the
-  `ARGUS_CONFIG_JSON` secret, your context in `ARGUS_CONTEXT_MD`, plus an API key and webhook secrets. Use a
+- **GitHub Actions**: [`.github/workflows/digest.yml`](.github/workflows/digest.yml) — off by default; set the
+  repository variable `ARGUS_SCHEDULE=true` to turn it on, then put your config in the `ARGUS_CONFIG_JSON` secret, your context in `ARGUS_CONTEXT_MD`, plus an API key and webhook secrets. Use a
   private fork: the state cache is your reading history.
 - **Inside Claude Code / Codex**: schedule a daily task with the prompt from [`AGENTS.md`](AGENTS.md)
   (section 2) and `llm.backend = "agent"`.

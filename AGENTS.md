@@ -45,7 +45,8 @@ Do these steps in order. Ask the user only what you cannot infer; propose sensib
    - Script mode on this machine: `python3 argus.py schedule install` (launchd on macOS, crontab on Linux).
      It wakes hourly; each job runs once a day after `schedule.hour`, retries on failure and catches up after
      sleep. The computer must be on.
-   - GitHub Actions (no computer needed): follow the header of `.github/workflows/digest.yml`.
+   - GitHub Actions (no computer needed): follow the header of `.github/workflows/digest.yml`; it stays skipped
+     until the repository variable `ARGUS_SCHEDULE` is `true`.
    - Agent mode: create a daily scheduled task in the user's agent product that follows section 2.
 6. **Tell the user** how to manage tracked topics (`python3 argus.py track list|add|remove`) and where logs are
    (`logs/`).
